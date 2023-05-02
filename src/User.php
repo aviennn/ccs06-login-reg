@@ -48,14 +48,14 @@ class User
 		return $this->email;
 	}
 
-	public function getGender()
-	{
-		return $this->gender;
-	}
-
 	public function getBirthDate()
 	{
 		return $this->birthdate;
+	}
+
+	public function getGender()
+	{
+		return $this->gender;
 	}
 
 	public function getAddress()
@@ -128,7 +128,7 @@ class User
 		return null;
 	}
 
-	public static function register($first_name, $middle_name, $last_name, $email, $password, $gender, $birthdate, $address, $contact_number)
+	public static function register($first_name, $middle_name, $last_name, $email, $password, $birthdate, $gender, $address, $contact_number)
 	{
 		global $conn;
 		
@@ -136,8 +136,8 @@ class User
 		try {
 			$hash_pass = self::hashPassword($password);
 			$sql = "
-				INSERT INTO users (first_name, middle_name, last_name, email, pass, gender, birthdate, address, contact_number)
-				VALUES ('$first_name', '$middle_name', '$last_name', '$email', '$hash_pass', '$gender', '$birthdate', '$address', '$contact_number')
+				INSERT INTO users (first_name, middle_name, last_name, email, pass, birthdate, gender, address, contact_number)
+				VALUES ('$first_name', '$middle_name', '$last_name', '$email', '$hash_pass', '$birthdate', '$gender', '$address', '$contact_number')
 			";
 
 			$conn->exec($sql);
@@ -164,8 +164,8 @@ class User
 						last_name=\"{$user['last_name']}\",
 						email=\"{$user['email']}\",
 						pass=\"{$user['pass']}\",
-						gender=\"{$user['gender']}\",
 						birthdate=\"{$user['birthdate']}\",
+						gender=\"{$user['gender']}\",
 						address=\"{$user['address']}\",
 						contact_number=\"{$user['contact_number']}\"
 						
