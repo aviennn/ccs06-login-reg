@@ -8,10 +8,17 @@ use App\User;
 
 try {
 	$first_name = $_POST['first_name'];
+	$middle_name = $_POST['middle_name'];
 	$last_name = $_POST['last_name'];
 	$email = $_POST['email'];
 	$password = $_POST['password'];
-	$result = User::register($first_name, $last_name, $email, $password);
+	$birthdate = $_POST['birthdate'];
+	$gender = $_POST['gender'];
+	$address = $_POST['address'];
+	$contact_number = $_POST['contact_number'];
+	$confirm_password = $_POST ['confirm_password'];
+	$result = User::register($first_name, $middle_name, $last_name, $email, $password, $birthdate, $gender, $address, $contact_number);
+
 
 	if ($result) {
 
@@ -20,8 +27,12 @@ try {
 		$_SESSION['is_logged_in'] = true;
 		$_SESSION['user'] = [
 			'id' => $result,
-			'fullname' => $first_name . ' ' . $last_name,
-			'email' => $email
+			'fullname' => $first_name . ' ' . $middle_name . " " . $last_name,
+			'email' => $email,
+			'birthdate' => $birthdate,
+			'gender' => $gender,
+			'address' => $address,
+			'contact_number' => $contact_number
 		];
 		header('Location: index.php');
 	}

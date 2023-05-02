@@ -43,6 +43,15 @@ $user = User::getById($_SESSION['user']['id']);
         </td>
     </tr>
     <tr>
+    <tr>
+        <td>Middle Name</td>
+        <td>
+            <strong>
+                <?php echo $user->getMiddleName();?>
+            </strong>
+        </td>
+    </tr>
+    <tr>
         <td>Last Name</td>
         <td>
             <strong>
@@ -55,6 +64,38 @@ $user = User::getById($_SESSION['user']['id']);
         <td>
             <strong>
                 <?php echo $user->getEmail();?>
+            </strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Birthdate</td>
+        <td>
+            <strong>
+                <?php echo $user->getBirthDate();?>
+            </strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Gender</td>
+        <td>
+            <strong>
+                <?php echo $user->getGender();?>
+            </strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td>
+            <strong>
+                <?php echo $user->getAddress();?>
+            </strong>
+        </td>
+    </tr>
+    <tr>
+        <td>Contact Number</td>
+        <td>
+            <strong>
+                <?php echo $user->getContactNumber();?>
             </strong>
         </td>
     </tr>

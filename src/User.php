@@ -8,9 +8,14 @@ class User
 {
 	protected $id;
 	protected $first_name;
+	protected $middle_name;
 	protected $last_name;
 	protected $email;
 	protected $pass;
+	protected $gender;
+	protected $birthdate;
+	protected $address;
+	protected $contact_number;
 	protected $created_at;
 
 	public function getId()
@@ -20,12 +25,17 @@ class User
 
 	public function getFullName()
 	{
-		return $this->first_name . ' ' . $this->last_name;
+		return $this->first_name . ' ' . $this->middle_name . ' ' . $this->last_name;
 	}
 
 	public function getFirstName()
 	{
 		return $this->first_name;
+	}
+
+	public function getMiddleName()
+	{
+		return $this->middle_name;
 	}
 
 	public function getLastName()
@@ -37,6 +47,28 @@ class User
 	{
 		return $this->email;
 	}
+
+	public function getGender()
+	{
+		return $this->gender;
+	}
+
+	public function getBirthDate()
+	{
+		return $this->birthdate;
+	}
+
+	public function getAddress()
+	{
+		return $this->address;
+	}
+
+	public function getContactNumber()
+	{
+		return $this->contact_number;
+	}
+
+	
 
 	public static function getById($id)
 	{
@@ -61,6 +93,12 @@ class User
 		return null;
 	}
 
+	public static function hashPassword($password)
+	{
+		$hash_pass = password_hash($password, PASSWORD_ARGON2I);
+		return $hash_pass;
+	}
+
 	public static function attemptLogin($email, $pass)
 	{
 		global $conn;
@@ -69,16 +107,20 @@ class User
 			$sql = "
 				SELECT * FROM users
 				WHERE email=:email
-					AND pass=:pass
 				LIMIT 1
 			";
 			$statement = $conn->prepare($sql);
 			$statement->execute([
 				'email' => $email,
-				'pass' => $pass
 			]);
 			$result = $statement->fetchObject('App\User');
-			return $result;
+		
+			if ($result && password_verify($pass, User::hashPassword($pass))) {
+				$pass = User::hashPassword($pass);
+				return $result;
+			}
+
+			
 		} catch (PDOException $e) {
 			error_log($e->getMessage());
 		}
@@ -86,15 +128,18 @@ class User
 		return null;
 	}
 
-	public static function register($first_name, $last_name, $email, $password)
+	public static function register($first_name, $middle_name, $last_name, $email, $password, $gender, $birthdate, $address, $contact_number)
 	{
 		global $conn;
+		
 
 		try {
+			$hash_pass = self::hashPassword($password);
 			$sql = "
-				INSERT INTO users (first_name, last_name, email, pass)
-				VALUES ('$first_name', '$last_name', '$email', '$password')
+				INSERT INTO users (first_name, middle_name, last_name, email, pass, gender, birthdate, address, contact_number)
+				VALUES ('$first_name', '$middle_name', '$last_name', '$email', '$hash_pass', '$gender', '$birthdate', '$address', '$contact_number')
 			";
+
 			$conn->exec($sql);
 			// echo "<li>Executed SQL query " . $sql;
 			return $conn->lastInsertId();
@@ -115,9 +160,15 @@ class User
 					INSERT INTO users
 					SET
 						first_name=\"{$user['first_name']}\",
+						middle_name=\"{$user['middle_name']}\",
 						last_name=\"{$user['last_name']}\",
 						email=\"{$user['email']}\",
-						pass=\"{$user['pass']}\"
+						pass=\"{$user['pass']}\",
+						gender=\"{$user['gender']}\",
+						birthdate=\"{$user['birthdate']}\",
+						address=\"{$user['address']}\",
+						contact_number=\"{$user['contact_number']}\"
+						
 				";
 				$conn->exec($sql);
 				// echo "<li>Executed SQL query " . $sql;
